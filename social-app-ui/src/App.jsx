@@ -4,6 +4,20 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/api/posts/${id}`, {
+        method: "DELETE"
+      });
+      setPosts((prevPosts) =>
+        prevPosts.filter((post) => post._id !== id)
+      );
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleSubmit = async () => {
     try {
@@ -18,8 +32,9 @@ function App() {
         }),
       });
       const newPost = await response.json();
+      setPosts([newPost, ...posts])
       console.log(newPost)
-
+      setMessage("پست با موفقیت ثبت شد")
     } catch (error) {
       console.log(error)
     }
@@ -53,6 +68,7 @@ function App() {
 
       <br /><br />
       <button onClick={handleSubmit}>create post</button>
+      {message && <p>{message}</p>}
       <h2>Posts</h2>
 
       {
@@ -63,6 +79,7 @@ function App() {
             author={post.author}
             content={post.content}
             likes={post.likes}
+            onDelete={handleDelete}
           />
         )
 
