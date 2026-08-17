@@ -36,6 +36,8 @@ const createPost=async(req,res)=>{
 
 const deletePost=async(req,res)=>{
     try {
+            console.log("ID:", req.params.id);
+
         const post=await Post.findByIdAndDelete(req.params.id);
 
         if(!post){
@@ -47,13 +49,34 @@ const deletePost=async(req,res)=>{
             message:"post delete successfully"
         });
     } catch (error) {
+            console.log(error);
+
         res.status(500).json({
             message:error.message
         });
     }
 };
 
+const updatePost=async(req,res)=>{
+    try {
+        const post=await Post.findByIdAndUpdate(req.params.id,
+            {author:req.body.author,
+            content:req.body.content,
+            },
+            {
+                returnDocument:"after",
+            }
+        );
+        res.json(post)
+    } catch (error) {
+        res.status(500).json({
+            message:error.message,
+        });
+    }
+};
+
 module.exports={
+    updatePost,
   deletePost,
     getPosts,
     createPost,

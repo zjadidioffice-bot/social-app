@@ -5,6 +5,42 @@ function App() {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const [message, setMessage] = useState("");
+  const [editingPost, setEditingPost] = useState(null);
+  const [editingContent, setEditingContent] = useState("");
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/posts/${editingPost._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body:JSON.stringify({
+            author:editingPost.author,
+            content:editingContent,
+          }),
+        }
+      );
+      const updatePost=await response.json();
+      console.log(updatePost)
+      setPosts(posts.map((post)=>post._id===updatePost._id?updatePost:post));
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  const handleEdit = (id) => {
+    const post = posts.find(
+      (post) => post._id === id
+    );
+    setEditingPost(post)
+    setEditingContent(post.content);
+    console.log("EDIT", id)
+    console.log("EDIT", post)
+
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -70,16 +106,37 @@ function App() {
       <button onClick={handleSubmit}>create post</button>
       {message && <p>{message}</p>}
       <h2>Posts</h2>
-
+      {
+        editingPost && (
+          <div>
+            <h2>editing post</h2>
+            <textarea
+              value={editingContent}
+              onChange={(e) => setEditingContent(e.target.value)}
+              rows="5"
+              cols="40"
+            />
+            <br />
+            <button onClick={handleSave}>save</button>
+            <button
+              onClick={() => setEditingPost(null)}
+            >
+              cancle
+            </button>
+          </div>
+        )
+      }
       {
         posts.map((post) =>
         (
           <Post
             key={post._id}
+            id={post._id}
             author={post.author}
             content={post.content}
             likes={post.likes}
             onDelete={handleDelete}
+            onEdit={handleEdit}
           />
         )
 

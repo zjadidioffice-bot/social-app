@@ -1,4 +1,4 @@
-function Post({ id,author, content, likes,onDelete }) {
+function Post({ id, author, content, likes, onDelete,onEdit }) {
     return (
         <div>
             <h3>{author}</h3>
@@ -7,10 +7,20 @@ function Post({ id,author, content, likes,onDelete }) {
                 ❤️ {likes}
             </button>
             <button
-            onClick={()=>onDelete(id)}
+                onClick={() => {
+                    console.log("DELETE CLICKED", id);
+                    onDelete(id)
+                }
+                }
             >
                 DELETE
             </button>
+                <button
+                onClick={()=>onEdit(id)}
+                >
+                    EDIT
+                </button>
+
         </div>
     );
 }
