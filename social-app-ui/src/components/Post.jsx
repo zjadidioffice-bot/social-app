@@ -16,7 +16,15 @@ function Post({ id, author, content, likes, onDelete,onEdit }) {
                 DELETE
             </button>
                 <button
-                onClick={()=>onEdit(id)}
+                onClick={()=>
+                {
+                            console.log("EDIT BUTTON CLICKED");
+        console.log("onEdit:", onEdit);
+        console.log("id:", id);
+                    onEdit(id)
+                }
+                    
+}
                 >
                     EDIT
                 </button>
