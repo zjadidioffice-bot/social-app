@@ -1,9 +1,12 @@
-function Post({ id, author, content, likes, onDelete,onEdit }) {
+import { Link } from "react-router-dom"
+function Post({ id, author, content, likes, onDelete, onEdit }) {
     return (
         <div>
             <h3>{author}</h3>
-            <p>{content}</p>
-            <button>
+            <Link to={`/post/${id}`}>
+                <p>{content}</p>
+            </Link>
+            <button> 
                 ❤️ {likes}
             </button>
             <button
@@ -15,19 +18,18 @@ function Post({ id, author, content, likes, onDelete,onEdit }) {
             >
                 DELETE
             </button>
-                <button
-                onClick={()=>
-                {
-                            console.log("EDIT BUTTON CLICKED");
-        console.log("onEdit:", onEdit);
-        console.log("id:", id);
+            <button
+                onClick={() => {
+                    console.log("EDIT BUTTON CLICKED");
+                    console.log("onEdit:", onEdit);
+                    console.log("id:", id);
                     onEdit(id)
                 }
-                    
-}
-                >
-                    EDIT
-                </button>
+
+                }
+            >
+                EDIT
+            </button>
 
         </div>
     );

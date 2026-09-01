@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Post from "../components/Post";
 
 function Home() {
+
     const [posts, setPosts] = useState([]);
     const [editingPost,setEditingPost]=useState(null);
     const [editingContent,setEditingContent]=useState("");
@@ -31,6 +32,21 @@ function Home() {
                 }),
                } 
             );
+                    console.log("STATUS:", response.status);
+
+        const updatePost = await response.json();
+
+
+        setPosts((prevPosts)=>
+        prevPosts.map((post)=>
+        post._id===updatePost._id
+        ?updatePost
+        :post
+        )
+      );
+      setEditingPost(null);
+
+        console.log("UPDATED POST:", updatePost);
         } catch (error) {
             console.log(error);
         }
