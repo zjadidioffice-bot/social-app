@@ -1,25 +1,41 @@
-const Post=require("../models/Post");
+const Post = require("../models/Post");
 
-const getPosts=async(req,res)=>{
+const getPostById = async (req, res) => {
     try {
-        const posts=await Post.find().sort({createdAt:-1,});
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({
+                message: "post not found"
+            })
+        }
+        res.json(post)
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    };
+}
+
+const getPosts = async (req, res) => {
+    try {
+        const posts = await Post.find().sort({ createdAt: -1, });
         res.json(posts);
     } catch (error) {
         res.status(500).json({
-            message:error.message,
+            message: error.message,
         });
     }
 };
 
-const createPost=async(req,res)=>{
+const createPost = async (req, res) => {
     try {
-        const{author,content,likes}=req.body;
-        if(!author || !content){
+        const { author, content, likes } = req.body;
+        if (!author || !content) {
             return res.status(400).json({
-                message:"author and content are required"
+                message: "author and content are required"
             });
         }
-        const post=await Post.create({
+        const post = await Post.create({
             author,
             content,
             likes
@@ -29,55 +45,57 @@ const createPost=async(req,res)=>{
 
     } catch (error) {
         res.status(500).json({
-            message:error.message,
+            message: error.message,
         });
     }
 }
 
-const deletePost=async(req,res)=>{
+const deletePost = async (req, res) => {
     try {
-            console.log("ID:", req.params.id);
+        console.log("ID:", req.params.id);
 
-        const post=await Post.findByIdAndDelete(req.params.id);
+        const post = await Post.findByIdAndDelete(req.params.id);
 
-        if(!post){
+        if (!post) {
             return res.status(404).json({
-                message:"post not found"
+                message: "post not found"
             });
         }
         res.json({
-            message:"post delete successfully"
+            message: "post delete successfully"
         });
     } catch (error) {
-            console.log(error);
+        console.log(error);
 
         res.status(500).json({
-            message:error.message
+            message: error.message
         });
     }
 };
 
-const updatePost=async(req,res)=>{
+const updatePost = async (req, res) => {
     try {
-        const post=await Post.findByIdAndUpdate(req.params.id,
-            {author:req.body.author,
-            content:req.body.content,
+        const post = await Post.findByIdAndUpdate(req.params.id,
+            {
+                author: req.body.author,
+                content: req.body.content,
             },
             {
-                returnDocument:"after",
+                returnDocument: "after",
             }
         );
         res.json(post)
     } catch (error) {
         res.status(500).json({
-            message:error.message,
+            message: error.message,
         });
     }
 };
 
-module.exports={
+module.exports = {
+    getPostById,
     updatePost,
-  deletePost,
+    deletePost,
     getPosts,
     createPost,
 };
