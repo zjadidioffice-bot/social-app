@@ -4,61 +4,84 @@ import Post from "../components/Post";
 function Home() {
 
     const [posts, setPosts] = useState([]);
-    const [editingPost,setEditingPost]=useState(null);
-    const [editingContent,setEditingContent]=useState("");
-    const handleEdit=async(id)=>{
-        const post=posts.find(
-            (post)=>post._id===id
+    const [editingPost, setEditingPost] = useState(null);
+    const [editingContent, setEditingContent] = useState("");
+    const handleEdit = async (id) => {
+        const post = posts.find(
+            (post) => post._id === id
         );
 
         setEditingPost(post);
         setEditingContent(post.content);
 
-        console.log("edit",id);
-        console.log("edit",post);
+        console.log("edit", id);
+        console.log("edit", post);
     }
-    
-    const handleSave=async()=>{
+
+
+    const handleLike = async (id) => {
         try {
-            const response=await fetch(`http://localhost:3000/api/posts/${editingPost._id}`,
-               {
-                method:"PUT",
-                headers:{
-                    "Content-Type":"application/json",
-                },
-                body:JSON.stringify({
-                    author:editingPost.author,
-                    content:editingContent,
-                }),
-               } 
+            const response = await fetch(
+                `http://localhost:3000/api/posts/${id}/like`,
+                {
+                    method: "POST",
+                }
             );
-                    console.log("STATUS:", response.status);
 
-        const updatePost = await response.json();
+            const updatedPost = await response.json();
+
+            setPosts((prevPosts) =>
+                prevPosts.map((post) =>
+                    post._id === updatedPost._id
+                        ? updatedPost
+                        : post
+                ));
+        } catch (error) {
+                console.log(error)
+        }
+    }
+
+    const handleSave = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/posts/${editingPost._id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        author: editingPost.author,
+                        content: editingContent,
+                    }),
+                }
+            );
+            console.log("STATUS:", response.status);
+
+            const updatePost = await response.json();
 
 
-        setPosts((prevPosts)=>
-        prevPosts.map((post)=>
-        post._id===updatePost._id
-        ?updatePost
-        :post
-        )
-      );
-      setEditingPost(null);
+            setPosts((prevPosts) =>
+                prevPosts.map((post) =>
+                    post._id === updatePost._id
+                        ? updatePost
+                        : post
+                )
+            );
+            setEditingPost(null);
 
-        console.log("UPDATED POST:", updatePost);
+            console.log("UPDATED POST:", updatePost);
         } catch (error) {
             console.log(error);
         }
     };
 
-    const handleDelete=async(id)=>{
+    const handleDelete = async (id) => {
         try {
-            await fetch(`http://localhost:3000/api/posts/${id}`,{
-                method:"DELETE",
+            await fetch(`http://localhost:3000/api/posts/${id}`, {
+                method: "DELETE",
             });
-            setPosts((prevPosts)=>
-            prevPosts.filter((post)=>post._id!==id)
+            setPosts((prevPosts) =>
+                prevPosts.filter((post) => post._id !== id)
             )
         } catch (error) {
             console.log(error);
@@ -86,17 +109,17 @@ function Home() {
                 <div>
                     <h2>editing post</h2>
                     <textarea
-                    value={editingContent}
-                    onChange={(e)=>
-                        setEditingContent(e.target.value)
-                    }
-                    rows="5"
-                    cols="40"
+                        value={editingContent}
+                        onChange={(e) =>
+                            setEditingContent(e.target.value)
+                        }
+                        rows="5"
+                        cols="40"
                     />
-                    <br/>
+                    <br />
                     <button onClick={handleSave}>save</button>
                     <button
-                    onClick={()=>setEditingPost(null)}
+                        onClick={() => setEditingPost(null)}
                     >cancle</button>
                 </div>
             )}
@@ -111,6 +134,7 @@ function Home() {
                         likes={post.likes}
                         onDelete={handleDelete}
                         onEdit={handleEdit}
+                        onLike={handleLike}
                     />
                 );
             })}

@@ -1,5 +1,29 @@
 const Post = require("../models/Post");
 
+const likePost=async(req,res)=>{
+    try {
+        const post=await Post.findByIdAndUpdate(
+            req.params.id,
+            {
+                $inc:{likes:1}
+            },
+            {
+                returnDocument:"after"
+            }
+        );
+        if(!post){
+            return res.status(404).json({
+                message:"post not found"
+            });
+        }
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({
+            message:"server error"
+        });
+    }
+};
+
 const getPostById = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
@@ -93,6 +117,7 @@ const updatePost = async (req, res) => {
 };
 
 module.exports = {
+    likePost,
     getPostById,
     updatePost,
     deletePost,

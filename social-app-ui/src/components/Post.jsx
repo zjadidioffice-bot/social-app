@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom"
-function Post({ id, author, content, likes, onDelete, onEdit }) {
+function Post({ id, author, content, likes, onDelete, onEdit, onLike }) {
     return (
         <div>
             <h3>{author}</h3>
             <Link to={`/post/${id}`}>
                 <p>{content}</p>
             </Link>
-            <button> 
+            <button onClick={()=>onLike(id)}> 
                 ❤️ {likes}
             </button>
             <button

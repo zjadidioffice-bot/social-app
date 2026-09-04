@@ -7,7 +7,8 @@ const{
     getPosts,
     createPost,
     updatePost,
-    getPostById
+    getPostById,
+    likePost,
 }=require("../controllers/postController");
 
 router.get("/",getPosts);
@@ -15,6 +16,8 @@ router.get("/",getPosts);
 router.get("/:id",getPostById);
 
 router.post("/",createPost);
+
+router.post("/:id/like",likePost)
 
 router.delete("/:id",deletePost);
 
