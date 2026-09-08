@@ -6,6 +6,21 @@ function SinglePost() {
 
     const [post, setPost] = useState(null);
 
+    const handleLike = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/posts/${id}/like`,
+                {
+                    method: "POST",
+                }
+            );
+            const updatedPost = await response.json();
+            setPost(updatedPost)
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         fetch(`http://localhost:3000/api/posts/${id}`)
             .then((response) => response.json())
@@ -21,11 +36,14 @@ function SinglePost() {
     return (
         <div>
             <h1>Single Post</h1>
-            { post && (
+            {post && (
                 <div>
                     <h2>{post.author}</h2>
                     <p>{post.content}</p>
-                    <p>❤️{post.likes}</p>
+                    <button onClick={handleLike}>
+                        ❤️{post.likes}
+                    </button>
+
                 </div>
             )}
 
